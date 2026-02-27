@@ -18,7 +18,12 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 
 		<!-- ── Brand ────────────────────────────────────────── -->
 		<div class="site-header__brand">
-			<?php if ( has_custom_logo() ) : ?>
+			<?php $logo_id = (int) geller2026_option( 'logo_id' ); ?>
+			<?php if ( $logo_id ) : ?>
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+					<?php echo wp_get_attachment_image( $logo_id, 'full', false, [ 'class' => 'custom-logo', 'loading' => 'eager', 'decoding' => 'async' ] ); ?>
+				</a>
+			<?php elseif ( has_custom_logo() ) : ?>
 				<?php the_custom_logo(); ?>
 			<?php else : ?>
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-header__name" rel="home">
