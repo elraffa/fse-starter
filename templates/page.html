@@ -1,13 +1,15 @@
 <!-- wp:geller2026/site-header /-->
 
-<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<!-- wp:group {"tagName":"main","layout":{"type":"default"}} -->
 <main class="wp-block-group">
 
-	<!-- wp:post-featured-image {"align":"wide","aspectRatio":"21/9","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|lg"}}}} /-->
+	<!-- wp:group {"layout":{"type":"constrained"}} -->
+	<div class="wp-block-group">
+		<!-- wp:post-featured-image {"align":"wide","aspectRatio":"21/9","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|lg"}}}} /-->
+		<!-- wp:post-title {"level":1,"style":{"spacing":{"margin":{"bottom":"var:preset|spacing|md"}}}} /-->
+	</div>
+	<!-- /wp:group -->
 
-	<!-- wp:post-title {"level":1,"style":{"spacing":{"margin":{"bottom":"var:preset|spacing|md"}}}} /-->
-
-	<!-- Pages use full-width block layouts (patterns, sections) — contentSize stays at 1200px -->
 	<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
 
 </main>
