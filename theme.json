@@ -234,7 +234,7 @@
 			"lineHeight": "1.65"
 		},
 		"spacing": {
-			"blockGap": "var(--wp--custom--spacing--gap)",
+			"blockGap": "0",
 			"padding": {
 				"top": "0px",
 				"bottom": "0px",
