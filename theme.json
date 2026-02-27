@@ -30,7 +30,7 @@
 				},
 				{
 					"slug": "accent",
-					"color": "#1e3464",
+					"color": "#1D3951",
 					"name": "Accent"
 				},
 				{
@@ -42,6 +42,66 @@
 					"slug": "border",
 					"color": "#e2ded8",
 					"name": "Border"
+				},
+				{
+					"slug": "primary-100",
+					"color": "#498ECA",
+					"name": "Primary 100"
+				},
+				{
+					"slug": "primary-200",
+					"color": "#4280B6",
+					"name": "Primary 200"
+				},
+				{
+					"slug": "primary-300",
+					"color": "#3A72A1",
+					"name": "Primary 300"
+				},
+				{
+					"slug": "primary-400",
+					"color": "#2C5579",
+					"name": "Primary 400"
+				},
+				{
+					"slug": "primary-500",
+					"color": "#1D3951",
+					"name": "Primary 500"
+				},
+				{
+					"slug": "primary-600",
+					"color": "#101C28",
+					"name": "Primary 600"
+				},
+				{
+					"slug": "gold-100",
+					"color": "#DEB83E",
+					"name": "Gold 100"
+				},
+				{
+					"slug": "gold-200",
+					"color": "#C8A538",
+					"name": "Gold 200"
+				},
+				{
+					"slug": "gold-300",
+					"color": "#B29332",
+					"name": "Gold 300"
+				},
+				{
+					"slug": "gold-400",
+					"color": "#856E25",
+					"name": "Gold 400"
+				},
+				{
+					"slug": "gold-500",
+					"color": "#6F5C1F",
+					"name": "Gold 500"
+				},
+				{
+					"slug": "gold-600",
+					"color": "#2C250C",
+					"name": "Gold 600"
 				}
 			]
 		},
@@ -185,44 +245,55 @@
 		"elements": {
 			"link": {
 				"color": {
-					"text": "var(--wp--preset--color--accent)"
+					"text": "var(--wp--preset--color--primary-300)"
 				},
 				":hover": {
 					"color": {
-						"text": "var(--wp--preset--color--contrast)"
+						"text": "var(--wp--preset--color--accent)"
 					}
 				}
 			},
 			"h1": {
 				"typography": {
 					"fontSize": "var(--wp--preset--font-size--4xl)",
-					"lineHeight": "1.08",
-					"fontWeight": "700",
-					"letterSpacing": "-0.03em"
+					"lineHeight": "1.1",
+					"fontWeight": "400"
 				}
 			},
 			"h2": {
 				"typography": {
 					"fontSize": "var(--wp--preset--font-size--3xl)",
-					"lineHeight": "1.12",
-					"fontWeight": "700",
-					"letterSpacing": "-0.025em"
+					"lineHeight": "1.15",
+					"fontWeight": "400"
 				}
 			},
 			"h3": {
 				"typography": {
 					"fontSize": "var(--wp--preset--font-size--2xl)",
 					"lineHeight": "1.2",
-					"fontWeight": "600",
-					"letterSpacing": "-0.015em"
+					"fontWeight": "400"
 				}
 			},
 			"h4": {
+				"color": {
+					"text": "#505050"
+				},
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--lg)",
+					"lineHeight": "1.3",
+					"fontWeight": "400"
+				}
+			},
+			"h5": {
+				"color": {
+					"text": "var(--wp--preset--color--gold-100)"
+				},
 				"typography": {
 					"fontSize": "var(--wp--preset--font-size--xl)",
 					"lineHeight": "1.3",
-					"fontWeight": "600",
-					"letterSpacing": "-0.01em"
+					"fontWeight": "400",
+					"textTransform": "uppercase",
+					"letterSpacing": "0.12em"
 				}
 			},
 			"button": {
@@ -258,7 +329,7 @@
 			},
 			"core/post-title": {
 				"typography": {
-					"fontWeight": "700"
+					"fontWeight": "400"
 				}
 			},
 			"core/separator": {
