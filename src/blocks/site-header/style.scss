@@ -1,0 +1,483 @@
+// ─── Config ──────────────────────────────────────────────────────────────────
+$bp:      768px;
+$h:       64px;
+$w:       min(340px, 85vw);               // drawer width
+$ease:    cubic-bezier(0.16, 1, 0.3, 1); // snappy expo ease-out
+$dur:     0.38s;
+
+// ─── Header shell ─────────────────────────────────────────────────────────────
+//
+// IMPORTANT: backdrop-filter is on ::before, NOT on .site-header itself.
+// If you apply backdrop-filter directly to a sticky/positioned element,
+// it creates a containing block for position:fixed descendants — meaning
+// the right-side drawer would be positioned relative to the 64px header
+// bar instead of the full viewport.
+//
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	border-bottom: 1px solid var(--wp--preset--color--border);
+	transition: box-shadow 0.25s ease;
+
+	// Frosted-glass background lives on the pseudo-element.
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: rgba(255, 255, 255, 0.94);
+		backdrop-filter: blur(14px) saturate(160%);
+		-webkit-backdrop-filter: blur(14px) saturate(160%);
+	}
+
+	&.is-scrolled {
+		box-shadow: 0 2px 24px rgba(0, 0, 0, 0.08);
+	}
+
+	// Safety net: hide any site tagline/description that might bleed in
+	// from a saved database template that still has core/site-tagline.
+	.site-description {
+		display: none !important;
+	}
+}
+
+// ─── Inner layout — flex, logo pushes nav + actions to the right ──────────────
+.site-header__inner {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	height: $h;
+	padding-inline: var(--wp--style--root--padding-left, 1.5rem);
+
+	@media (max-width: #{$bp - 1px}) {
+		justify-content: space-between;
+	}
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+.site-header__brand {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	margin-right: auto;
+	flex-shrink: 0;
+
+	.custom-logo-link {
+		display: flex;
+		align-items: center;
+		line-height: 0;
+	}
+
+	.custom-logo {
+		height: 34px;
+		width: auto;
+		display: block;
+	}
+}
+
+// Fallback site name shown only when no logo image is uploaded
+.site-header__name {
+	font-size: var(--wp--preset--font-size--lg);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	transition: color 0.15s ease;
+	white-space: nowrap;
+
+	&:hover {
+		color: var(--wp--preset--color--accent);
+	}
+}
+
+// ─── Desktop nav (grid col 2, centred) ────────────────────────────────────────
+.site-header__nav {
+	@media (max-width: #{$bp - 1px}) {
+		display: none;
+	}
+
+	ul.site-header__menu {
+		display: flex;
+		align-items: center;
+		gap: 0.125rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+// Nav items
+.site-header__menu > .menu-item {
+	position: relative;
+
+	> a {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.375rem 0.75rem;
+		font-size: var(--wp--preset--font-size--sm);
+		font-weight: 500;
+		color: var(--wp--preset--color--contrast);
+		text-decoration: none;
+		white-space: nowrap;
+		transition: color 0.15s ease;
+
+		&:hover {
+			color: var(--wp--preset--color--accent);
+		}
+	}
+
+	// Chevron — SVG via mask so it inherits currentColor (changes on hover)
+	&.menu-item-has-children > a::after {
+		content: "";
+		display: inline-block;
+		width: 13px;
+		height: 13px;
+		flex-shrink: 0;
+		background-color: currentColor;
+		-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center / contain;
+		mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center / contain;
+		transition: transform 0.25s $ease;
+	}
+
+	&.menu-item-has-children:hover > a::after,
+	&.menu-item-has-children:focus-within > a::after {
+		transform: rotate(180deg);
+	}
+
+	// Hover bridge — invisible strip below the <li> that fills the gap
+	// between the nav link and the dropdown panel. Hovering it keeps the
+	// parent li:hover alive so the menu doesn't close mid-cursor-travel.
+	&.menu-item-has-children::after {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		height: 0.625rem; // ≥ gap to sub-menu (top: calc(100% + 0.5rem))
+	}
+
+	// Dropdown panel
+	> .sub-menu {
+		position: absolute;
+		top: calc(100% + 0.5rem);
+		left: 0;
+		min-width: 210px;
+		background: #fff;
+		border-radius: 0.625rem;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.1),
+			0 0 0 1px rgba(0, 0, 0, 0.05);
+		padding: 0.375rem;
+		list-style: none;
+		margin: 0;
+		z-index: 200;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-6px);
+		transition:
+			opacity 0.15s ease,
+			transform 0.2s $ease,
+			visibility 0s linear 0.15s;
+		pointer-events: none;
+
+		li a {
+			display: block;
+			padding: 0.5rem 0.875rem;
+			font-size: var(--wp--preset--font-size--sm);
+			font-weight: 400;
+			color: var(--wp--preset--color--contrast);
+			text-decoration: none;
+			border-radius: 0.375rem;
+			white-space: nowrap;
+			transition: color 0.1s ease;
+
+			&:hover {
+				color: var(--wp--preset--color--accent);
+			}
+		}
+	}
+
+	&:hover > .sub-menu,
+	&:focus-within > .sub-menu {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+		pointer-events: auto;
+		transition:
+			opacity 0.15s ease,
+			transform 0.2s $ease,
+			visibility 0s;
+	}
+}
+
+// ─── Actions (grid col 3, right-aligned) ──────────────────────────────────────
+.site-header__actions {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	flex-shrink: 0;
+}
+
+// Desktop CTA nav
+.site-header__cta-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+
+	@media (max-width: #{$bp - 1px}) {
+		display: none;
+	}
+
+	li a {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.625rem 1.375rem;
+		background-color: var(--wp--preset--color--accent);
+		color: #fff;
+		font-size: var(--wp--preset--font-size--sm);
+		font-weight: 600;
+		border-radius: 0.5rem;
+		text-decoration: none;
+		white-space: nowrap;
+		transition: opacity 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+
+		&:hover {
+			opacity: 0.88;
+			transform: translateY(-1px);
+			box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+		}
+	}
+}
+
+// ─── Hamburger button ─────────────────────────────────────────────────────────
+.site-header__toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	flex-shrink: 0;
+	transition: opacity 0.15s ease;
+
+	@media (max-width: #{$bp - 1px}) {
+		display: flex;
+	}
+
+	&:hover {
+		opacity: 0.6;
+	}
+}
+
+.site-header__burger {
+	position: relative;
+	width: 22px;
+	height: 12px;
+	pointer-events: none;
+
+	span {
+		position: absolute;
+		left: 0;
+		height: 2px;
+		background: var(--wp--preset--color--accent);
+		border-radius: 2px;
+		transition:
+			transform 0.35s $ease,
+			width 0.3s $ease,
+			top 0.3s $ease;
+
+		&:nth-child(1) {
+			top: 0;
+			width: 100%;        // 22px — dominant line
+		}
+
+		&:nth-child(2) {
+			top: 100%;
+			transform: translateY(-100%);
+			width: 14px;        // shorter — subtle asymmetry
+		}
+	}
+}
+
+// Two lines → X
+.site-header.menu-open .site-header__burger {
+	span:nth-child(1) {
+		top: 50%;
+		width: 100%;
+		transform: translateY(-50%) rotate(45deg);
+	}
+	span:nth-child(2) {
+		top: 50%;
+		width: 100%;
+		transform: translateY(-50%) rotate(-45deg);
+	}
+}
+
+// ─── Overlay (injected into <body> by view.js) ────────────────────────────────
+//
+// z-index 99 keeps it below the sticky header (z-index 100) so the
+// hamburger → X is always visible above the dimmed content.
+//
+.site-header-overlay {
+	position: fixed;
+	top: $h;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99;
+	background: rgba(10, 10, 10, 0);
+	pointer-events: none;
+	transition: background $dur ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+body.mobile-menu-open .site-header-overlay {
+	background: rgba(10, 10, 10, 0.5);
+	pointer-events: auto;
+}
+
+// ─── Mobile drawer ────────────────────────────────────────────────────────────
+//
+// Starts at $h (header height) so the sticky header — logo + hamburger — stays
+// visible above the drawer and the overlay. position:fixed is safe because
+// .site-header has backdrop-filter on ::before, not on itself.
+//
+.site-header__mobile {
+	position: fixed;
+	top: $h;
+	right: 0;
+	width: $w;
+	height: calc(100vh - #{$h});
+	height: calc(100dvh - #{$h});
+	z-index: 200;
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	box-shadow: -16px 0 48px rgba(0, 0, 0, 0.12);
+	overflow: hidden;
+
+	// Off-screen to the right by default
+	transform: translateX(105%);
+	visibility: hidden;
+	transition:
+		transform $dur $ease,
+		visibility 0s linear $dur;
+
+	@media (min-width: $bp) {
+		display: none !important;
+	}
+
+	// Slide in
+	&[aria-hidden="false"] {
+		transform: translateX(0);
+		visibility: visible;
+		transition:
+			transform $dur $ease,
+			visibility 0s;
+	}
+}
+
+// ─── Drawer scroll area ───────────────────────────────────────────────────────
+.site-header__mobile-inner {
+	flex: 1;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding: 0.5rem 1.5rem 2.5rem;
+}
+
+// ─── Mobile nav list ──────────────────────────────────────────────────────────
+.site-header__mobile-nav {
+	ul.site-header__mobile-menu {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		> .menu-item > a {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0.9375rem 0;
+			font-size: 1.0625rem;
+			font-weight: 500;
+			color: var(--wp--preset--color--contrast);
+			text-decoration: none;
+			border-bottom: 1px solid var(--wp--preset--color--border);
+			transition: color 0.15s ease;
+
+			&:hover { color: var(--wp--preset--color--accent); }
+		}
+
+		// Sub-menu caret
+		> .menu-item-has-children > a::after {
+			content: "";
+			display: inline-block;
+			width: 0;
+			height: 0;
+			border-inline: 4px solid transparent;
+			border-top: 5px solid currentColor;
+			flex-shrink: 0;
+			transition: transform 0.25s $ease;
+		}
+
+		> .menu-item-has-children.is-open > a::after {
+			transform: rotate(180deg);
+		}
+
+		// Sub-menu accordion
+		> .menu-item > .sub-menu {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			max-height: 0;
+			transition: max-height 0.35s $ease;
+
+			li a {
+				display: block;
+				padding: 0.5625rem 0 0.5625rem 0.875rem;
+				font-size: var(--wp--preset--font-size--base);
+				color: var(--wp--preset--color--muted);
+				text-decoration: none;
+				transition: color 0.15s ease;
+
+				&:hover { color: var(--wp--preset--color--accent); }
+			}
+		}
+
+		> .menu-item-has-children.is-open > .sub-menu {
+			max-height: 600px;
+		}
+	}
+}
+
+// ─── Mobile CTA button ────────────────────────────────────────────────────────
+.site-header__mobile-cta {
+	list-style: none;
+	margin: 1.5rem 0 0;
+	padding: 0;
+
+	li a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		padding: 0.875rem 1.5rem;
+		background-color: var(--wp--preset--color--accent);
+		color: #fff;
+		font-size: var(--wp--preset--font-size--base);
+		font-weight: 600;
+		border-radius: 0.625rem;
+		text-decoration: none;
+		box-sizing: border-box;
+		transition: opacity 0.15s ease;
+
+		&:hover { opacity: 0.9; }
+	}
+}

@@ -1,0 +1,39 @@
+/**
+ * Hero block — frontend + editor shared styles.
+ * Loaded on both the frontend and inside the block editor.
+ */
+
+.wp-block-geller2026-hero {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 60vh;
+
+	// Default background when none is set via block controls.
+	background-color: var(--wp--preset--color--contrast, #0a0a0a);
+	color: var(--wp--preset--color--base, #ffffff);
+
+	// Respect padding set through block spacing controls.
+	padding-block: var(--wp--style--block-gap, 4rem);
+	padding-inline: var(--wp--style--root--padding-left, 1.5rem);
+
+	.hero__inner {
+		width: 100%;
+		max-width: var(--wp--style--global--content-size, 680px);
+		margin-inline: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--wp--style--block-gap, 1.25rem);
+	}
+
+	// Inherit text colour inside so heading/paragraph can override as needed.
+	h1,
+	h2,
+	h3,
+	p {
+		color: inherit;
+	}
+}

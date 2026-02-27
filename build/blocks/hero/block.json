@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "geller2026/hero",
+  "version": "1.0.0",
+  "title": "Hero",
+  "category": "design",
+  "description": "Full-width hero section with InnerBlocks for flexible content.",
+  "keywords": [
+    "hero",
+    "banner",
+    "full-width",
+    "header"
+  ],
+  "textdomain": "geller2026",
+  "supports": {
+    "align": [
+      "full"
+    ],
+    "anchor": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": [
+        "top",
+        "bottom"
+      ]
+    },
+    "dimensions": {
+      "minHeight": true
+    },
+    "__experimentalBorder": {
+      "radius": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

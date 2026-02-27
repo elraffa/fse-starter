@@ -1,0 +1,15 @@
+/**
+ * Hero block — editor-only styles.
+ * Loaded only inside the block editor, never on the frontend.
+ */
+
+.wp-block-geller2026-hero {
+	// Visual indicator so the block is easy to spot in the canvas.
+	outline: 2px dashed rgba(255, 255, 255, 0.25);
+	outline-offset: -2px;
+
+	// Ensure InnerBlocks placeholder is visible on dark backgrounds.
+	.block-list-appender {
+		color: rgba(255, 255, 255, 0.6);
+	}
+}

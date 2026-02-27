@@ -1,0 +1,29 @@
+/**
+ * geller2026 — Global editor overrides.
+ * Loaded only inside the block editor canvas.
+ * Keep this minimal; prefer theme.json for design tokens.
+ */
+
+/* Base font for the editor canvas — matches the frontend Manrope registration */
+.editor-styles-wrapper {
+	font-family: Manrope, ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Header: make sticky position visible in editor ─────────────── */
+/*
+ * The editor renders template parts in a flat canvas, so position:sticky
+ * won't behave as on the frontend. These styles keep it looking correct.
+ */
+.site-header {
+	z-index: 100;
+}
+
+/* Navigation link hover in editor */
+.site-header .wp-block-navigation-item__content {
+	text-decoration: none;
+	transition: color 0.15s ease;
+}
+
+.site-header .wp-block-navigation-item__content:hover {
+	color: var(--wp--preset--color--accent);
+}
