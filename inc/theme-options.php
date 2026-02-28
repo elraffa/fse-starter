@@ -36,6 +36,13 @@ function geller2026_option_defaults(): array {
 		// Content
 		'show_page_title'  => true,
 		'show_post_title'  => true,
+		// Tracking
+		'gtm_id'              => '',
+		'ga4_id'              => '',
+		'meta_pixel_id'       => '',
+		'linkedin_partner_id' => '',
+		'gsc_verification'    => '',
+		'head_scripts'        => '',
 	];
 }
 
@@ -106,6 +113,14 @@ function geller2026_sanitize_options( mixed $input ): array {
 	// Content
 	$s['show_page_title']  = ! empty( $input['show_page_title'] );
 	$s['show_post_title']  = ! empty( $input['show_post_title'] );
+	// Tracking
+	$s['gtm_id']              = sanitize_text_field( $input['gtm_id'] ?? '' );
+	$s['ga4_id']              = sanitize_text_field( $input['ga4_id'] ?? '' );
+	$s['meta_pixel_id']       = sanitize_text_field( $input['meta_pixel_id'] ?? '' );
+	$s['linkedin_partner_id'] = sanitize_text_field( $input['linkedin_partner_id'] ?? '' );
+	$s['gsc_verification']    = sanitize_text_field( $input['gsc_verification'] ?? '' );
+	// Custom head scripts: admin-only, preserve raw content (no script stripping).
+	$s['head_scripts'] = trim( wp_unslash( (string) ( $input['head_scripts'] ?? '' ) ) );
 
 	return $s;
 }
@@ -136,6 +151,7 @@ function geller2026_render_options_page(): void {
 		'social'   => [ 'label' => 'Social',    'icon' => 'dashicons-share' ],
 		'contact'  => [ 'label' => 'Contact',   'icon' => 'dashicons-phone' ],
 		'content'  => [ 'label' => 'Content',   'icon' => 'dashicons-visibility' ],
+		'tracking' => [ 'label' => 'Tracking',  'icon' => 'dashicons-chart-bar' ],
 	];
 
 	// Active tab from URL, default to first.
@@ -389,6 +405,132 @@ function geller2026_render_options_page(): void {
 								<span class="gop-desc">Applies to single post pages.</span>
 							</span>
 						</label>
+					</div>
+				</div>
+
+				<?php geller2026_render_actions(); ?>
+			</div>
+
+		<!-- ── Tracking tab ──────────────────────────────────────── -->
+			<div class="gop-panel<?php echo $active === 'tracking' ? ' is-active' : ''; ?>" data-tab="tracking">
+
+				<div class="gop-section">
+					<p class="gop-section__title">Tag Manager</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Google Tag Manager
+							<small>Recommended — manages all tags in one place</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[gtm_id]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'gtm_id' ) ); ?>"
+								placeholder="GTM-XXXXXXX"
+							>
+							<p class="gop-desc">Set this up in <a href="https://tagmanager.google.com" target="_blank" rel="noopener">tagmanager.google.com</a>. Add GA4 and other tags from inside GTM.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">Analytics</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							GA4 Measurement ID
+							<small>Direct embed — only if NOT using GTM</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[ga4_id]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'ga4_id' ) ); ?>"
+								placeholder="G-XXXXXXXXXX"
+							>
+							<p class="gop-desc">If GTM is set above, this field is ignored — configure GA4 inside GTM instead.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">Advertising pixels</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Meta (Facebook) Pixel ID
+							<small>Facebook &amp; Instagram ad tracking</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[meta_pixel_id]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'meta_pixel_id' ) ); ?>"
+								placeholder="1234567890123456"
+							>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							LinkedIn Insight Tag
+							<small>B2B conversion tracking for LinkedIn ads</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[linkedin_partner_id]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'linkedin_partner_id' ) ); ?>"
+								placeholder="1234567"
+							>
+							<p class="gop-desc">Partner ID only — found in LinkedIn Campaign Manager → Account Assets → Insight Tag.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">Verification</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Search Console
+							<small>Google verification meta tag</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[gsc_verification]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'gsc_verification' ) ); ?>"
+								placeholder="abc123XYZ..."
+							>
+							<p class="gop-desc">Paste only the <code>content="…"</code> value from the verification tag — not the full tag.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">Custom head code</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Custom &lt;head&gt; scripts
+							<small>Injected verbatim — admins only</small>
+						</div>
+						<div>
+							<textarea
+								name="geller2026_options[head_scripts]"
+								class="gop-textarea gop-textarea--code"
+								rows="6"
+								placeholder="<!-- e.g. Hotjar, Microsoft Clarity, custom schema… -->"
+							><?php echo esc_textarea( (string) geller2026_option( 'head_scripts' ) ); ?></textarea>
+							<p class="gop-desc">For anything not covered above — Hotjar, Clarity, custom JSON-LD, etc. Injected as-is inside <code>&lt;head&gt;</code>.</p>
+						</div>
 					</div>
 				</div>
 
