@@ -91,3 +91,15 @@ add_action( 'init', function (): void {
 	remove_action( 'wp_head', 'wp_generator' );
 	remove_action( 'wp_head', 'feed_links_extra', 3 );
 } );
+
+// ─── Disable Comments ────────────────────────────────────────────────────────
+
+add_action( 'init', function (): void {
+	remove_post_type_support( 'post', 'comments' );
+	remove_post_type_support( 'post', 'trackbacks' );
+	remove_post_type_support( 'page', 'comments' );
+	remove_post_type_support( 'page', 'trackbacks' );
+} );
+
+add_filter( 'comments_open', '__return_false', 20 );
+add_filter( 'pings_open', '__return_false', 20 );
