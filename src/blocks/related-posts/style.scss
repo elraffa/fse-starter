@@ -1,0 +1,106 @@
+// ─── Config ───────────────────────────────────────────────────────────────────
+$bp-md: 768px;
+$bp-lg: 1024px;
+
+// ─── Section wrapper ──────────────────────────────────────────────────────────
+.related-posts {
+	background: var(--wp--preset--color--surface);
+
+	&__inner {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem);
+	}
+
+	&__label {
+		font-size: var(--wp--preset--font-size--sm);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--wp--preset--color--muted);
+		margin: 0 0 2rem;
+		text-align: center;
+	}
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+.related-posts__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+
+	@media (max-width: $bp-lg) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (max-width: $bp-md) {
+		grid-template-columns: 1fr;
+	}
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+.related-posts__card {
+	background: var(--wp--preset--color--base);
+	border-radius: 10px;
+	overflow: hidden;
+	text-decoration: none;
+	color: inherit;
+	display: flex;
+	flex-direction: column;
+	transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+	&:hover {
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+		transform: translateY(-3px);
+	}
+}
+
+// ─── Image ────────────────────────────────────────────────────────────────────
+.related-posts__img-wrap {
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	background: var(--wp--preset--color--border);
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.35s ease;
+	}
+}
+
+.related-posts__card:hover .related-posts__img-wrap img {
+	transform: scale(1.05);
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.related-posts__body {
+	padding: 1.25rem 1.5rem 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	flex: 1;
+}
+
+.related-posts__cat {
+	font-size: var(--wp--preset--font-size--sm);
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.07em;
+	color: var(--wp--preset--color--accent);
+}
+
+.related-posts__title {
+	font-size: var(--wp--preset--font-size--md);
+	font-weight: 600;
+	color: var(--wp--preset--color--contrast);
+	line-height: 1.35;
+	margin: 0;
+}
+
+.related-posts__date {
+	font-size: var(--wp--preset--font-size--sm);
+	color: var(--wp--preset--color--muted);
+	margin-top: auto;
+}

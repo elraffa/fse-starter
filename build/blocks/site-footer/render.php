@@ -192,7 +192,15 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 
 	<!-- ── Bottom bar ───────────────────────────────────────────────────── -->
 	<div class="site-footer__bottom">
-		<p>&copy; <?php echo esc_html( (string) gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'Todos los derechos reservados.', 'geller2026' ); ?></p>
+		<?php
+		$copyright = trim( (string) geller2026_option( 'footer_copyright' ) );
+		if ( $copyright ) {
+			$allowed = [ 'a' => [ 'href' => [], 'target' => [], 'rel' => [], 'title' => [] ], 'strong' => [], 'em' => [] ];
+			echo '<p>' . wp_kses( $copyright, $allowed ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			echo '<p>&copy; ' . esc_html( gmdate( 'Y' ) ) . ' ' . esc_html( get_bloginfo( 'name' ) ) . '. ' . esc_html__( 'Todos los derechos reservados.', 'geller2026' ) . '</p>';
+		}
+		?>
 	</div>
 
 </footer>
