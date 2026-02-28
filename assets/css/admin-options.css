@@ -335,6 +335,52 @@
 .gop-social-badge--instagram { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .gop-social-badge--youtube   { background: #FF0000; color: #fff; }
 
+/* ── Segmented control ──────────────────────────────────────────────────────── */
+.gop-segmented {
+	display: inline-flex;
+	border: 1px solid #d1d9e0;
+	border-radius: 7px;
+	overflow: hidden;
+}
+
+.gop-segmented label {
+	position: relative;
+	cursor: pointer;
+}
+
+.gop-segmented label + label {
+	border-left: 1px solid #d1d9e0;
+}
+
+.gop-segmented input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.gop-segmented span {
+	display: block;
+	padding: 7px 20px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #64748b;
+	background: #f8fafc;
+	white-space: nowrap;
+	transition: background 0.15s, color 0.15s;
+}
+
+.gop-segmented input:checked + span {
+	background: #1D3951;
+	color: #fff;
+	font-weight: 600;
+}
+
+.gop-segmented label:hover input:not(:checked) + span {
+	background: #f1f5f9;
+	color: #1D3951;
+}
+
 /* ── Action bar ─────────────────────────────────────────────────────────────── */
 .gop-actions {
 	display: flex;

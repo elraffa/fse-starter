@@ -21,6 +21,7 @@ function geller2026_option_defaults(): array {
 		'logo_id'          => 0,
 		'footer_logo_id'   => 0,
 		'footer_tagline'   => '',
+		'footer_cols'      => 4,
 		// Social
 		'social_linkedin'  => '',
 		'social_whatsapp'  => '',
@@ -88,6 +89,7 @@ function geller2026_sanitize_options( mixed $input ): array {
 	$s['logo_id']          = absint( $input['logo_id'] ?? 0 );
 	$s['footer_logo_id']   = absint( $input['footer_logo_id'] ?? 0 );
 	$s['footer_tagline']   = sanitize_textarea_field( $input['footer_tagline'] ?? '' );
+	$s['footer_cols']      = in_array( (int) ( $input['footer_cols'] ?? 4 ), [ 3, 4 ], true ) ? (int) $input['footer_cols'] : 4;
 	// Social
 	$s['social_linkedin']  = esc_url_raw( $input['social_linkedin'] ?? '' );
 	$s['social_whatsapp']  = esc_url_raw( $input['social_whatsapp'] ?? '' );
@@ -197,6 +199,27 @@ function geller2026_render_options_page(): void {
 
 				<div class="gop-section">
 					<p class="gop-section__title">Footer</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Columns
+							<small>Number of columns in the footer grid</small>
+						</div>
+						<div>
+							<?php $cols = (int) geller2026_option( 'footer_cols' ); ?>
+							<div class="gop-segmented">
+								<label>
+									<input type="radio" name="geller2026_options[footer_cols]" value="3" <?php checked( $cols, 3 ); ?>>
+									<span>3 Columns</span>
+								</label>
+								<label>
+									<input type="radio" name="geller2026_options[footer_cols]" value="4" <?php checked( $cols, 4 ); ?>>
+									<span>4 Columns</span>
+								</label>
+							</div>
+							<p class="gop-desc">4 cols: brand + 2 nav menus + contact. 3 cols: brand + 1 nav menu + contact.</p>
+						</div>
+					</div>
 
 					<div class="gop-field">
 						<div class="gop-field__label">

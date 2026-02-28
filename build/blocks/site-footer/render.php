@@ -32,8 +32,9 @@ if ( ! empty( $menu_locs['footer-col-2'] ) ) {
 	$col2_name = $obj ? $obj->name : '';
 }
 
+$footer_cols = (int) geller2026_option( 'footer_cols' ) ?: 4;
 $has_col1    = has_nav_menu( 'footer-col-1' );
-$has_col2    = has_nav_menu( 'footer-col-2' );
+$has_col2    = $footer_cols >= 4 && has_nav_menu( 'footer-col-2' );
 $has_social  = $ln_url || $wa_url || $ig_url || $yt_url;
 $has_contact = $phone || $address || $hours;
 
@@ -41,7 +42,7 @@ $wrapper_attrs = get_block_wrapper_attributes( [ 'class' => 'site-footer' ] );
 ?>
 <footer <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 
-	<div class="site-footer__inner">
+	<div class="site-footer__inner" data-cols="<?php echo esc_attr( (string) $footer_cols ); ?>">
 
 		<!-- ── Brand column ─────────────────────────────────────────────── -->
 		<div class="site-footer__brand">
