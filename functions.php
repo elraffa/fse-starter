@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/inc/theme-options.php';
+require_once __DIR__ . '/inc/icons.php';
 
 // ─── Theme Setup ─────────────────────────────────────────────────────────────
 
@@ -24,8 +25,10 @@ add_action( 'after_setup_theme', function (): void {
 
 	// Register navigation menu locations.
 	register_nav_menus( [
-		'primary'    => __( 'Primary Navigation', 'geller2026' ),
-		'header-cta' => __( 'Header CTA Button', 'geller2026' ),
+		'primary'       => __( 'Primary Navigation', 'geller2026' ),
+		'header-cta'    => __( 'Header CTA Button', 'geller2026' ),
+		'footer-col-1'  => __( 'Footer — Column 1', 'geller2026' ),
+		'footer-col-2'  => __( 'Footer — Column 2', 'geller2026' ),
 	] );
 } );
 

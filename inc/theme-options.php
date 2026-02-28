@@ -17,9 +17,22 @@ declare( strict_types=1 );
 
 function geller2026_option_defaults(): array {
 	return [
+		// Branding
 		'logo_id'          => 0,
+		// Content visibility
 		'show_page_title'  => true,
 		'show_post_title'  => true,
+		// Footer
+		'footer_tagline'   => '',
+		// Social
+		'social_linkedin'  => '',
+		'social_whatsapp'  => '',
+		'social_instagram' => '',
+		'social_youtube'   => '',
+		// Contact
+		'contact_phone'    => '',
+		'contact_address'  => '',
+		'contact_hours'    => '',
 	];
 }
 
@@ -106,6 +119,85 @@ function geller2026_register_settings(): void {
 			'description' => 'Display the title at the top of blog posts.',
 		]
 	);
+
+	// ── Section: Footer ───────────────────────────────────────────────────────
+	add_settings_section(
+		'geller2026_section_footer',
+		'Footer',
+		null,
+		'geller2026_options_page'
+	);
+
+	add_settings_field(
+		'footer_tagline',
+		'Footer tagline',
+		'geller2026_field_textarea',
+		'geller2026_options_page',
+		'geller2026_section_footer',
+		[
+			'key'         => 'footer_tagline',
+			'description' => 'Short description shown below the logo in the footer.',
+		]
+	);
+
+	// ── Section: Social Media ─────────────────────────────────────────────────
+	add_settings_section(
+		'geller2026_section_social',
+		'Social Media',
+		null,
+		'geller2026_options_page'
+	);
+
+	foreach ( [
+		'social_linkedin'  => 'LinkedIn URL',
+		'social_whatsapp'  => 'WhatsApp URL',
+		'social_instagram' => 'Instagram URL',
+		'social_youtube'   => 'YouTube URL',
+	] as $key => $label ) {
+		add_settings_field(
+			$key,
+			$label,
+			'geller2026_field_url',
+			'geller2026_options_page',
+			'geller2026_section_social',
+			[ 'key' => $key ]
+		);
+	}
+
+	// ── Section: Contact ──────────────────────────────────────────────────────
+	add_settings_section(
+		'geller2026_section_contact',
+		'Contact Info',
+		null,
+		'geller2026_options_page'
+	);
+
+	add_settings_field(
+		'contact_phone',
+		'Phone',
+		'geller2026_field_text',
+		'geller2026_options_page',
+		'geller2026_section_contact',
+		[ 'key' => 'contact_phone', 'description' => 'e.g. +54 11 1111-1111' ]
+	);
+
+	add_settings_field(
+		'contact_address',
+		'Address',
+		'geller2026_field_textarea',
+		'geller2026_options_page',
+		'geller2026_section_contact',
+		[ 'key' => 'contact_address', 'description' => 'Use line breaks for multi-line address.' ]
+	);
+
+	add_settings_field(
+		'contact_hours',
+		'Hours',
+		'geller2026_field_text',
+		'geller2026_options_page',
+		'geller2026_section_contact',
+		[ 'key' => 'contact_hours', 'description' => 'e.g. Lun–Vie 09hs – 19hs' ]
+	);
 }
 
 // ─── Sanitize ─────────────────────────────────────────────────────────────────
@@ -113,9 +205,22 @@ function geller2026_register_settings(): void {
 function geller2026_sanitize_options( mixed $input ): array {
 	$sanitized = [];
 
-	$sanitized['logo_id']         = absint( $input['logo_id'] ?? 0 );
-	$sanitized['show_page_title'] = ! empty( $input['show_page_title'] );
-	$sanitized['show_post_title'] = ! empty( $input['show_post_title'] );
+	// Branding
+	$sanitized['logo_id']          = absint( $input['logo_id'] ?? 0 );
+	// Content
+	$sanitized['show_page_title']  = ! empty( $input['show_page_title'] );
+	$sanitized['show_post_title']  = ! empty( $input['show_post_title'] );
+	// Footer
+	$sanitized['footer_tagline']   = sanitize_textarea_field( $input['footer_tagline'] ?? '' );
+	// Social
+	$sanitized['social_linkedin']  = esc_url_raw( $input['social_linkedin'] ?? '' );
+	$sanitized['social_whatsapp']  = esc_url_raw( $input['social_whatsapp'] ?? '' );
+	$sanitized['social_instagram'] = esc_url_raw( $input['social_instagram'] ?? '' );
+	$sanitized['social_youtube']   = esc_url_raw( $input['social_youtube'] ?? '' );
+	// Contact
+	$sanitized['contact_phone']    = sanitize_text_field( $input['contact_phone'] ?? '' );
+	$sanitized['contact_address']  = sanitize_textarea_field( $input['contact_address'] ?? '' );
+	$sanitized['contact_hours']    = sanitize_text_field( $input['contact_hours'] ?? '' );
 
 	return $sanitized;
 }
@@ -257,6 +362,63 @@ function geller2026_field_toggle( array $args ): void {
 			<span class="description"><?php echo esc_html( $args['description'] ); ?></span>
 		<?php endif; ?>
 	</label>
+	<?php
+}
+
+/**
+ * Plain text input field.
+ */
+function geller2026_field_text( array $args ): void {
+	$key   = $args['key'];
+	$value = (string) geller2026_option( $key );
+	?>
+	<input
+		type="text"
+		id="geller2026_<?php echo esc_attr( $key ); ?>"
+		name="geller2026_options[<?php echo esc_attr( $key ); ?>]"
+		value="<?php echo esc_attr( $value ); ?>"
+		class="regular-text"
+	>
+	<?php if ( ! empty( $args['description'] ) ) : ?>
+		<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+	<?php endif; ?>
+	<?php
+}
+
+/**
+ * URL input field.
+ */
+function geller2026_field_url( array $args ): void {
+	$key   = $args['key'];
+	$value = (string) geller2026_option( $key );
+	?>
+	<input
+		type="url"
+		id="geller2026_<?php echo esc_attr( $key ); ?>"
+		name="geller2026_options[<?php echo esc_attr( $key ); ?>]"
+		value="<?php echo esc_attr( $value ); ?>"
+		class="regular-text"
+		placeholder="https://"
+	>
+	<?php
+}
+
+/**
+ * Textarea field.
+ */
+function geller2026_field_textarea( array $args ): void {
+	$key   = $args['key'];
+	$value = (string) geller2026_option( $key );
+	?>
+	<textarea
+		id="geller2026_<?php echo esc_attr( $key ); ?>"
+		name="geller2026_options[<?php echo esc_attr( $key ); ?>]"
+		rows="3"
+		class="large-text"
+	><?php echo esc_textarea( $value ); ?></textarea>
+	<?php if ( ! empty( $args['description'] ) ) : ?>
+		<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+	<?php endif; ?>
 	<?php
 }
 

@@ -1,0 +1,193 @@
+// ─── Config ───────────────────────────────────────────────────────────────────
+$bp-md:   768px;
+$bp-lg:   1024px;
+
+// ─── Footer shell ─────────────────────────────────────────────────────────────
+.site-footer {
+	background: var(--wp--preset--color--primary-600); // #101C28 — deepest navy
+	color: var(--wp--preset--color--base);
+	width: 100%;
+}
+
+// ─── Main grid ────────────────────────────────────────────────────────────────
+.site-footer__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem);
+
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr;
+	gap: clamp(2rem, 5vw, 4rem);
+
+	@media (max-width: $bp-lg) {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	@media (max-width: $bp-md) {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+}
+
+// ─── Brand column ─────────────────────────────────────────────────────────────
+.site-footer__brand {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.site-footer__logo-link {
+	display: inline-flex;
+	align-items: center;
+}
+
+.site-footer__logo {
+	max-height: 48px;
+	width: auto;
+	display: block;
+}
+
+.site-footer__name {
+	font-size: var(--wp--preset--font-size--lg);
+	font-weight: 700;
+	color: var(--wp--preset--color--base);
+	text-decoration: none;
+}
+
+.site-footer__tagline {
+	font-size: var(--wp--preset--font-size--sm);
+	color: rgba(255, 255, 255, 0.6);
+	line-height: 1.65;
+	margin: 0;
+	max-width: 30ch;
+}
+
+// ─── Social icons ─────────────────────────────────────────────────────────────
+.site-footer__social {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.625rem;
+	margin-top: 0.25rem;
+}
+
+.site-footer__social-link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--wp--preset--color--gold-100);
+	color: var(--wp--preset--color--primary-600);
+	text-decoration: none;
+	flex-shrink: 0;
+	transition: background 0.2s ease, transform 0.2s ease;
+
+	svg {
+		display: block;
+	}
+
+	&:hover,
+	&:focus-visible {
+		background: var(--wp--preset--color--gold-200);
+		transform: translateY(-2px);
+		outline: none;
+	}
+
+	&:focus-visible {
+		box-shadow: 0 0 0 3px var(--wp--preset--color--gold-100);
+	}
+}
+
+// ─── Column heading ────────────────────────────────────────────────────────────
+.site-footer__col-heading {
+	font-size: var(--wp--preset--font-size--sm);
+	font-weight: 600;
+	color: var(--wp--preset--color--base);
+	letter-spacing: 0.03em;
+	margin: 0 0 1.25rem;
+}
+
+// ─── Nav columns ──────────────────────────────────────────────────────────────
+.site-footer__nav-col {
+	// On tablet, first nav col spans from col 2 (brand takes col 1 only at lg)
+}
+
+.site-footer__nav-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.875rem;
+
+	li {
+		margin: 0;
+		padding: 0;
+	}
+
+	a {
+		font-size: var(--wp--preset--font-size--sm);
+		color: rgba(255, 255, 255, 0.65);
+		text-decoration: none;
+		line-height: 1.4;
+		transition: color 0.18s ease;
+
+		&:hover,
+		&:focus-visible {
+			color: var(--wp--preset--color--base);
+			outline: none;
+		}
+	}
+}
+
+// ─── Contact column ───────────────────────────────────────────────────────────
+.site-footer__contact-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.site-footer__contact-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.875rem;
+
+	svg {
+		flex-shrink: 0;
+		color: var(--wp--preset--color--gold-100);
+		margin-top: 1px; // optical align with first line of text
+	}
+
+	a,
+	span {
+		font-size: var(--wp--preset--font-size--sm);
+		color: rgba(255, 255, 255, 0.65);
+		text-decoration: none;
+		line-height: 1.5;
+	}
+
+	a:hover,
+	a:focus-visible {
+		color: var(--wp--preset--color--base);
+		outline: none;
+	}
+}
+
+// ─── Bottom bar ───────────────────────────────────────────────────────────────
+.site-footer__bottom {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+	p {
+		font-size: var(--wp--preset--font-size--sm);
+		color: rgba(255, 255, 255, 0.35);
+		margin: 0;
+		text-align: center;
+	}
+}
