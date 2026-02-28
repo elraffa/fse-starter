@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/inc/theme-options.php';
 require_once __DIR__ . '/inc/icons.php';
 require_once __DIR__ . '/inc/tracking.php';
+require_once __DIR__ . '/inc/frontend.php';
 
 // ─── Theme Setup ─────────────────────────────────────────────────────────────
 

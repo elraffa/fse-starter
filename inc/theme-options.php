@@ -36,6 +36,16 @@ function geller2026_option_defaults(): array {
 		// Content
 		'show_page_title'  => true,
 		'show_post_title'  => true,
+		// Announcement bar
+		'announcement_enabled' => false,
+		'announcement_text'    => '',
+		'announcement_link'    => '',
+		'announcement_bg'      => '#DEB83E',
+		// WhatsApp float
+		'whatsapp_float'         => false,
+		'whatsapp_float_message' => '',
+		// OG image
+		'og_image_id' => 0,
 		// Tracking
 		'gtm_id'              => '',
 		'ga4_id'              => '',
@@ -113,6 +123,16 @@ function geller2026_sanitize_options( mixed $input ): array {
 	// Content
 	$s['show_page_title']  = ! empty( $input['show_page_title'] );
 	$s['show_post_title']  = ! empty( $input['show_post_title'] );
+	// Announcement bar
+	$s['announcement_enabled'] = ! empty( $input['announcement_enabled'] );
+	$s['announcement_text']    = sanitize_text_field( $input['announcement_text'] ?? '' );
+	$s['announcement_link']    = esc_url_raw( $input['announcement_link'] ?? '' );
+	$s['announcement_bg']      = sanitize_hex_color( $input['announcement_bg'] ?? '' ) ?: '#DEB83E';
+	// WhatsApp float
+	$s['whatsapp_float']         = ! empty( $input['whatsapp_float'] );
+	$s['whatsapp_float_message'] = sanitize_text_field( $input['whatsapp_float_message'] ?? '' );
+	// OG image
+	$s['og_image_id'] = absint( $input['og_image_id'] ?? 0 );
 	// Tracking
 	$s['gtm_id']              = sanitize_text_field( $input['gtm_id'] ?? '' );
 	$s['ga4_id']              = sanitize_text_field( $input['ga4_id'] ?? '' );
@@ -218,6 +238,21 @@ function geller2026_render_options_page(): void {
 				</div>
 
 				<div class="gop-section">
+					<p class="gop-section__title">Social sharing</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Default OG image
+							<small>Fallback when no featured image — 1200×630px recommended</small>
+						</div>
+						<div>
+							<?php geller2026_logo_field( 'og_image_id', false ); ?>
+							<p class="gop-desc">Used for social previews (Facebook, WhatsApp, Twitter/X) on pages without a featured image. Ignored if Yoast SEO or RankMath is active.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
 					<p class="gop-section__title">Footer</p>
 
 					<div class="gop-field">
@@ -310,6 +345,42 @@ function geller2026_render_options_page(): void {
 						</div>
 					</div>
 					<?php endforeach; ?>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">WhatsApp floating button</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">Enable float button</div>
+						<label class="gop-toggle">
+							<input
+								type="checkbox"
+								name="geller2026_options[whatsapp_float]"
+								value="1"
+								<?php checked( geller2026_option( 'whatsapp_float' ), true ); ?>
+							>
+							<span class="gop-toggle__body">
+								<span class="gop-toggle__label">Show WhatsApp chat button on the site</span>
+								<span class="gop-desc">Uses the WhatsApp URL from above. Has no effect if that field is empty.</span>
+							</span>
+						</label>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Pre-filled message
+							<small>Optional — opens chat with this text ready to send</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[whatsapp_float_message]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'whatsapp_float_message' ) ); ?>"
+								placeholder="Hola, quiero hacer una consulta."
+							>
+						</div>
+					</div>
 				</div>
 
 				<?php geller2026_render_actions(); ?>
@@ -405,6 +476,68 @@ function geller2026_render_options_page(): void {
 								<span class="gop-desc">Applies to single post pages.</span>
 							</span>
 						</label>
+					</div>
+				</div>
+
+				<div class="gop-section">
+					<p class="gop-section__title">Announcement bar</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">Enable bar</div>
+						<label class="gop-toggle">
+							<input
+								type="checkbox"
+								name="geller2026_options[announcement_enabled]"
+								value="1"
+								<?php checked( geller2026_option( 'announcement_enabled' ), true ); ?>
+							>
+							<span class="gop-toggle__body">
+								<span class="gop-toggle__label">Show announcement bar at the top of every page</span>
+								<span class="gop-desc">Visitors can dismiss it — it won't reappear unless the text changes.</span>
+							</span>
+						</label>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Message
+							<small>Short text shown in the bar</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[announcement_text]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'announcement_text' ) ); ?>"
+								placeholder="Nueva sede en Palermo. ¡Consultanos!"
+							>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Link
+							<small>Optional — makes the text a clickable link</small>
+						</div>
+						<div>
+							<input
+								type="url"
+								name="geller2026_options[announcement_link]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'announcement_link' ) ); ?>"
+								placeholder="https://..."
+							>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Background color
+						</div>
+						<div>
+							<?php geller2026_color_field( 'announcement_bg', '#DEB83E' ); ?>
+							<p class="gop-desc">Text color is auto-adjusted for contrast.</p>
+						</div>
 					</div>
 				</div>
 
