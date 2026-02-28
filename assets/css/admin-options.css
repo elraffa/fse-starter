@@ -335,6 +335,36 @@
 .gop-social-badge--instagram { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .gop-social-badge--youtube   { background: #FF0000; color: #fff; }
 
+/* ── Color picker field ─────────────────────────────────────────────────────── */
+.gop-color-field {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.gop-color-swatch {
+	width: 40px;
+	height: 36px;
+	padding: 2px 3px;
+	border: 1px solid #d1d9e0;
+	border-radius: 6px;
+	cursor: pointer;
+	background: #f8fafc;
+	flex-shrink: 0;
+}
+
+.gop-color-swatch::-webkit-color-swatch-wrapper { padding: 0; }
+.gop-color-swatch::-webkit-color-swatch { border: none; border-radius: 4px; }
+.gop-color-swatch::-moz-color-swatch { border: none; border-radius: 4px; }
+
+.gop-color-text {
+	width: 96px !important;
+	max-width: 96px !important;
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: 13px !important;
+	letter-spacing: 0.03em;
+}
+
 /* ── Segmented control ──────────────────────────────────────────────────────── */
 .gop-segmented {
 	display: inline-flex;

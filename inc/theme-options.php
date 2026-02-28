@@ -22,6 +22,8 @@ function geller2026_option_defaults(): array {
 		'footer_logo_id'   => 0,
 		'footer_tagline'   => '',
 		'footer_cols'      => 4,
+		'footer_bg_color'  => '#101C28',
+		'footer_icon_color' => '#DEB83E',
 		// Social
 		'social_linkedin'  => '',
 		'social_whatsapp'  => '',
@@ -89,7 +91,9 @@ function geller2026_sanitize_options( mixed $input ): array {
 	$s['logo_id']          = absint( $input['logo_id'] ?? 0 );
 	$s['footer_logo_id']   = absint( $input['footer_logo_id'] ?? 0 );
 	$s['footer_tagline']   = sanitize_textarea_field( $input['footer_tagline'] ?? '' );
-	$s['footer_cols']      = in_array( (int) ( $input['footer_cols'] ?? 4 ), [ 3, 4 ], true ) ? (int) $input['footer_cols'] : 4;
+	$s['footer_cols']       = in_array( (int) ( $input['footer_cols'] ?? 4 ), [ 3, 4 ], true ) ? (int) $input['footer_cols'] : 4;
+	$s['footer_bg_color']   = sanitize_hex_color( $input['footer_bg_color'] ?? '' ) ?: '#101C28';
+	$s['footer_icon_color'] = sanitize_hex_color( $input['footer_icon_color'] ?? '' ) ?: '#DEB83E';
 	// Social
 	$s['social_linkedin']  = esc_url_raw( $input['social_linkedin'] ?? '' );
 	$s['social_whatsapp']  = esc_url_raw( $input['social_whatsapp'] ?? '' );
@@ -218,6 +222,25 @@ function geller2026_render_options_page(): void {
 								</label>
 							</div>
 							<p class="gop-desc">4 cols: brand + 2 nav menus + contact. 3 cols: brand + 1 nav menu + contact.</p>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Background color
+						</div>
+						<div>
+							<?php geller2026_color_field( 'footer_bg_color', '#101C28' ); ?>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Icon color
+							<small>Social circles &amp; contact icons</small>
+						</div>
+						<div>
+							<?php geller2026_color_field( 'footer_icon_color', '#DEB83E' ); ?>
 						</div>
 					</div>
 
@@ -398,6 +421,16 @@ function geller2026_render_options_page(): void {
 			} );
 		} );
 
+		// Color pickers — keep swatch and text input in sync.
+		document.querySelectorAll( '.gop-color-field' ).forEach( function ( field ) {
+			var swatch = field.querySelector( '.gop-color-swatch' );
+			var text   = field.querySelector( '.gop-color-text' );
+			swatch.addEventListener( 'input', function () { text.value = swatch.value; } );
+			text.addEventListener( 'input', function () {
+				if ( /^#[0-9a-f]{6}$/i.test( text.value ) ) swatch.value = text.value;
+			} );
+		} );
+
 		// Restore active tab: URL param → localStorage → first tab.
 		var urlParam = new URLSearchParams( location.search ).get( '_tab' );
 		var stored   = '';
@@ -409,6 +442,32 @@ function geller2026_render_options_page(): void {
 		activate( initial );
 	} )();
 	</script>
+	<?php
+}
+
+// ─── Helper: color picker field ───────────────────────────────────────────────
+
+function geller2026_color_field( string $key, string $default = '#000000' ): void {
+	$value = (string) geller2026_option( $key ) ?: $default;
+	$uid   = 'geller2026_' . $key;
+	?>
+	<div class="gop-color-field">
+		<input
+			type="color"
+			class="gop-color-swatch"
+			aria-hidden="true"
+			value="<?php echo esc_attr( $value ); ?>"
+		>
+		<input
+			type="text"
+			id="<?php echo esc_attr( $uid ); ?>"
+			name="geller2026_options[<?php echo esc_attr( $key ); ?>]"
+			class="gop-color-text"
+			value="<?php echo esc_attr( $value ); ?>"
+			maxlength="7"
+			placeholder="<?php echo esc_attr( $default ); ?>"
+		>
+	</div>
 	<?php
 }
 

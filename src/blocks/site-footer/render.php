@@ -38,7 +38,13 @@ $has_col2    = $footer_cols >= 4 && has_nav_menu( 'footer-col-2' );
 $has_social  = $ln_url || $wa_url || $ig_url || $yt_url;
 $has_contact = $phone || $address || $hours;
 
-$wrapper_attrs = get_block_wrapper_attributes( [ 'class' => 'site-footer' ] );
+$footer_bg    = sanitize_hex_color( (string) geller2026_option( 'footer_bg_color' ) ) ?: '#101C28';
+$footer_icon  = sanitize_hex_color( (string) geller2026_option( 'footer_icon_color' ) ) ?: '#DEB83E';
+
+$wrapper_attrs = get_block_wrapper_attributes( [
+	'class' => 'site-footer',
+	'style' => '--footer-bg:' . $footer_bg . ';--footer-icon:' . $footer_icon,
+] );
 ?>
 <footer <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 

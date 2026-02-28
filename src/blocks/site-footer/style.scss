@@ -4,7 +4,7 @@ $bp-lg:   1024px;
 
 // ─── Footer shell ─────────────────────────────────────────────────────────────
 .site-footer {
-	background: var(--wp--preset--color--primary-600); // #101C28 — deepest navy
+	background: var(--footer-bg, var(--wp--preset--color--primary-600));
 	color: var(--wp--preset--color--base);
 	width: 100%;
 }
@@ -81,8 +81,8 @@ $bp-lg:   1024px;
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	background: var(--wp--preset--color--gold-100);
-	color: var(--wp--preset--color--primary-600);
+	background: var(--footer-icon, var(--wp--preset--color--gold-100));
+	color: var(--footer-bg, var(--wp--preset--color--primary-600));
 	text-decoration: none;
 	flex-shrink: 0;
 	transition: background 0.2s ease, transform 0.2s ease;
@@ -162,7 +162,7 @@ $bp-lg:   1024px;
 
 	svg {
 		flex-shrink: 0;
-		color: var(--wp--preset--color--gold-100);
+		color: var(--footer-icon, var(--wp--preset--color--gold-100));
 		margin-top: 1px; // optical align with first line of text
 	}
 
