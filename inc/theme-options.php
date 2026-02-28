@@ -43,9 +43,15 @@ function geller2026_option_defaults(): array {
 		'announcement_bg'      => '#DEB83E',
 		// WhatsApp float
 		'whatsapp_float'         => false,
+		'whatsapp_float_label'   => '',
 		'whatsapp_float_message' => '',
 		// OG image
 		'og_image_id' => 0,
+		// Footer copyright
+		'footer_copyright' => '',
+		// Schema
+		'schema_area_served'  => '',
+		'schema_description'  => '',
 		// Tracking
 		'gtm_id'              => '',
 		'ga4_id'              => '',
@@ -130,9 +136,16 @@ function geller2026_sanitize_options( mixed $input ): array {
 	$s['announcement_bg']      = sanitize_hex_color( $input['announcement_bg'] ?? '' ) ?: '#DEB83E';
 	// WhatsApp float
 	$s['whatsapp_float']         = ! empty( $input['whatsapp_float'] );
+	$s['whatsapp_float_label']   = sanitize_text_field( $input['whatsapp_float_label'] ?? '' );
 	$s['whatsapp_float_message'] = sanitize_text_field( $input['whatsapp_float_message'] ?? '' );
 	// OG image
 	$s['og_image_id'] = absint( $input['og_image_id'] ?? 0 );
+	// Footer copyright — allow links and basic inline elements.
+	$allowed_html      = [ 'a' => [ 'href' => [], 'target' => [], 'rel' => [], 'title' => [] ], 'strong' => [], 'em' => [] ];
+	$s['footer_copyright'] = wp_kses( wp_unslash( (string) ( $input['footer_copyright'] ?? '' ) ), $allowed_html );
+	// Schema
+	$s['schema_area_served'] = sanitize_text_field( $input['schema_area_served'] ?? '' );
+	$s['schema_description'] = sanitize_textarea_field( $input['schema_description'] ?? '' );
 	// Tracking
 	$s['gtm_id']              = sanitize_text_field( $input['gtm_id'] ?? '' );
 	$s['ga4_id']              = sanitize_text_field( $input['ga4_id'] ?? '' );
@@ -308,6 +321,22 @@ function geller2026_render_options_page(): void {
 							><?php echo esc_textarea( (string) geller2026_option( 'footer_tagline' ) ); ?></textarea>
 						</div>
 					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Copyright text
+							<small>Replaces the auto-generated line. HTML links allowed.</small>
+						</div>
+						<div>
+							<textarea
+								name="geller2026_options[footer_copyright]"
+								class="gop-textarea"
+								rows="2"
+								placeholder="&copy; 2026 Estudio Geller. <a href=&quot;/privacidad&quot;>Política de privacidad</a>"
+							><?php echo esc_textarea( (string) geller2026_option( 'footer_copyright' ) ); ?></textarea>
+							<p class="gop-desc">Supports <code>&lt;a href="..."&gt;</code> links. Leave empty to use the default auto-generated text.</p>
+						</div>
+					</div>
 				</div>
 
 				<?php geller2026_render_actions(); ?>
@@ -364,6 +393,23 @@ function geller2026_render_options_page(): void {
 								<span class="gop-desc">Uses the WhatsApp URL from above. Has no effect if that field is empty.</span>
 							</span>
 						</label>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							CTA label
+							<small>Optional — bubble shown next to the button</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[whatsapp_float_label]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'whatsapp_float_label' ) ); ?>"
+								placeholder="¿Necesitás asesoramiento?"
+							>
+							<p class="gop-desc">Shown to the left of the button. Leave empty to hide.</p>
+						</div>
 					</div>
 
 					<div class="gop-field">
@@ -648,7 +694,43 @@ function geller2026_render_options_page(): void {
 				</div>
 
 				<div class="gop-section">
-					<p class="gop-section__title">Custom head code</p>
+					<p class="gop-section__title">Structured data (schema.org)</p>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Area served
+							<small>Geographic area the firm covers</small>
+						</div>
+						<div>
+							<input
+								type="text"
+								name="geller2026_options[schema_area_served]"
+								class="gop-input"
+								value="<?php echo esc_attr( (string) geller2026_option( 'schema_area_served' ) ); ?>"
+								placeholder="Buenos Aires, Argentina"
+							>
+						</div>
+					</div>
+
+					<div class="gop-field">
+						<div class="gop-field__label">
+							Firm description
+							<small>Short description for search engines</small>
+						</div>
+						<div>
+							<textarea
+								name="geller2026_options[schema_description]"
+								class="gop-textarea"
+								rows="3"
+								placeholder="Estudio jurídico especializado en..."
+							><?php echo esc_textarea( (string) geller2026_option( 'schema_description' ) ); ?></textarea>
+							<p class="gop-desc">Outputs a <code>LegalService</code> JSON-LD block using the firm's name, phone, address, logo, and social profiles. Ignored if Yoast SEO or RankMath is active.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="gop-section">
+				<p class="gop-section__title">Custom head code</p>
 
 					<div class="gop-field">
 						<div class="gop-field__label">

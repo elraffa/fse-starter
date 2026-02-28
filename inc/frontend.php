@@ -142,22 +142,47 @@ function geller2026_whatsapp_float(): void {
 	if ( $message ) {
 		$wa_url = add_query_arg( 'text', rawurlencode( $message ), $wa_url );
 	}
+
+	$label = trim( (string) geller2026_option( 'whatsapp_float_label' ) );
 	?>
-	<a
-		href="<?php echo esc_url( $wa_url ); ?>"
-		class="geller-wa-float"
-		target="_blank"
-		rel="noopener noreferrer"
-		aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'geller2026' ); ?>"
-	>
-		<?php echo geller2026_icon( 'whatsapp', 26 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-	</a>
+	<div class="geller-wa-wrap">
+		<?php if ( $label ) : ?>
+		<span class="geller-wa-label" aria-hidden="true"><?php echo esc_html( $label ); ?></span>
+		<?php endif; ?>
+		<a
+			href="<?php echo esc_url( $wa_url ); ?>"
+			class="geller-wa-float"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="<?php echo $label ? esc_attr( $label ) : esc_attr__( 'Chat on WhatsApp', 'geller2026' ); ?>"
+		>
+			<?php echo geller2026_icon( 'whatsapp', 26 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</a>
+	</div>
 	<style>
-	.geller-wa-float {
+	.geller-wa-wrap {
 		position: fixed;
 		bottom: 24px;
 		right: 24px;
 		z-index: 9999;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.geller-wa-label {
+		background: #fff;
+		color: #0a0a0a;
+		font-size: .8125rem;
+		font-weight: 500;
+		line-height: 1.3;
+		white-space: nowrap;
+		padding: .45rem .9rem;
+		border-radius: 20px;
+		box-shadow: 0 2px 12px rgba(0,0,0,.15);
+		pointer-events: none;
+	}
+	.geller-wa-float {
+		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -171,14 +196,16 @@ function geller2026_whatsapp_float(): void {
 		transition: transform .2s ease, box-shadow .2s ease;
 	}
 	.geller-wa-float svg { display: block; }
-	.geller-wa-float:hover,
+	.geller-wa-wrap:hover .geller-wa-float,
 	.geller-wa-float:focus-visible {
 		transform: scale(1.08) translateY(-2px);
 		box-shadow: 0 8px 24px rgba(0,0,0,.25);
 		outline: none;
 	}
 	@media (max-width: 767px) {
-		.geller-wa-float { bottom: 16px; right: 16px; width: 50px; height: 50px; }
+		.geller-wa-wrap { bottom: 16px; right: 16px; }
+		.geller-wa-float { width: 50px; height: 50px; }
+		.geller-wa-label { display: none; }
 	}
 	</style>
 	<?php
@@ -244,4 +271,78 @@ function geller2026_og_tags(): void {
 	<meta name="twitter:image" content="<?php echo esc_url( $img_url ); ?>">
 	<?php endif; ?>
 	<?php
+}
+
+// ─── Organization schema (JSON-LD) ───────────────────────────────────────────
+
+add_action( 'wp_head', 'geller2026_organization_schema', 3 );
+
+function geller2026_organization_schema(): void {
+	// Bail if a SEO plugin is active — they output their own schema.
+	if ( defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) || defined( 'AIOSEO_VERSION' ) ) {
+		return;
+	}
+
+	$name = get_bloginfo( 'name' );
+	if ( ! $name ) {
+		return;
+	}
+
+	$schema = [
+		'@context' => 'https://schema.org',
+		'@type'    => 'LegalService',
+		'name'     => $name,
+		'url'      => home_url( '/' ),
+	];
+
+	// Logo.
+	$logo_id = (int) geller2026_option( 'logo_id' );
+	if ( $logo_id ) {
+		$logo_url = wp_get_attachment_image_url( $logo_id, 'full' );
+		if ( $logo_url ) {
+			$schema['logo'] = $logo_url;
+		}
+	}
+
+	// Contact.
+	$phone = trim( (string) geller2026_option( 'contact_phone' ) );
+	if ( $phone ) {
+		$schema['telephone'] = $phone;
+	}
+
+	$address = trim( (string) geller2026_option( 'contact_address' ) );
+	if ( $address ) {
+		$schema['address'] = [
+			'@type'         => 'PostalAddress',
+			'streetAddress' => $address,
+		];
+	}
+
+	$hours = trim( (string) geller2026_option( 'contact_hours' ) );
+	if ( $hours ) {
+		$schema['openingHours'] = $hours;
+	}
+
+	// Area served + description.
+	$area = trim( (string) geller2026_option( 'schema_area_served' ) );
+	if ( $area ) {
+		$schema['areaServed'] = $area;
+	}
+
+	$desc = trim( (string) geller2026_option( 'schema_description' ) );
+	if ( $desc ) {
+		$schema['description'] = $desc;
+	}
+
+	// Social profiles → sameAs.
+	$same_as = array_filter( [
+		(string) geller2026_option( 'social_linkedin' ),
+		(string) geller2026_option( 'social_instagram' ),
+		(string) geller2026_option( 'social_youtube' ),
+	] );
+	if ( $same_as ) {
+		$schema['sameAs'] = array_values( $same_as );
+	}
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT ) . '</script>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
