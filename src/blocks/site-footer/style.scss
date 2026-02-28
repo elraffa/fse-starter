@@ -25,11 +25,13 @@ $bp-lg:   1024px;
 
 	@media (max-width: $bp-lg) {
 		grid-template-columns: 1fr 1fr;
+		&[data-cols="3"] { grid-template-columns: 1fr 1fr; }
 	}
 
 	@media (max-width: $bp-md) {
 		grid-template-columns: 1fr;
 		gap: 2.5rem;
+		&[data-cols="3"] { grid-template-columns: 1fr; }
 	}
 }
 
