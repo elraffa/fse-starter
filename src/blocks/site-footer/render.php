@@ -6,7 +6,9 @@
  */
 
 // ── Theme options ──────────────────────────────────────────────────────────────
-$logo_id       = (int) geller2026_option( 'logo_id' );
+// Prefer a dedicated footer logo (white version); fall back to header logo.
+$footer_logo_id = (int) geller2026_option( 'footer_logo_id' );
+$logo_id        = $footer_logo_id ?: (int) geller2026_option( 'logo_id' );
 $tagline       = (string) geller2026_option( 'footer_tagline' );
 $phone         = (string) geller2026_option( 'contact_phone' );
 $address       = (string) geller2026_option( 'contact_address' );
