@@ -35,3 +35,48 @@
 body {
 	font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
+
+/* ─── Single post ─────────────────────────────────────────────────────────── */
+
+/* Category pill */
+.single-cat {
+	margin: 0;
+	line-height: 1;
+}
+
+.single-cat.wp-block-post-terms a {
+	display: inline-flex;
+	align-items: center;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--wp--preset--color--accent);
+	background: rgba(29, 57, 81, 0.07);
+	padding: 0.3rem 0.9rem;
+	border-radius: 100px;
+	text-decoration: none;
+	border: 1px solid rgba(29, 57, 81, 0.18);
+	transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.single-cat.wp-block-post-terms a:hover {
+	background: rgba(29, 57, 81, 0.13);
+	border-color: rgba(29, 57, 81, 0.3);
+}
+
+/* Prose — post body paragraphs */
+.wp-block-post-content p {
+	font-size: var(--wp--preset--font-size--lg);
+	line-height: 1.85;
+}
+
+.wp-block-post-content p + p {
+	margin-top: 1.35em;
+}
+
+.wp-block-post-content h2,
+.wp-block-post-content h3 {
+	margin-top: 2em;
+	margin-bottom: 0.6em;
+}
