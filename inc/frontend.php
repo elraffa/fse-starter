@@ -10,6 +10,102 @@
 
 declare( strict_types=1 );
 
+// ─── Breadcrumbs ──────────────────────────────────────────────────────────────
+
+add_shortcode( 'geller_breadcrumbs', 'geller2026_breadcrumbs_shortcode' );
+
+function geller2026_breadcrumbs_shortcode(): string {
+	if ( ! is_singular( 'post' ) ) {
+		return '';
+	}
+
+	$items   = [];
+	$items[] = sprintf(
+		'<li class="geller-breadcrumbs__item"><a href="%1$s">%2$s</a></li>',
+		esc_url( home_url( '/' ) ),
+		esc_html__( 'Inicio', 'geller2026' )
+	);
+
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+	$posts_url     = $posts_page_id ? get_permalink( $posts_page_id ) : get_post_type_archive_link( 'post' );
+	$posts_label   = $posts_page_id ? get_the_title( $posts_page_id ) : __( 'Blog', 'geller2026' );
+
+	if ( $posts_url && $posts_label ) {
+		$items[] = sprintf(
+			'<li class="geller-breadcrumbs__item"><a href="%1$s">%2$s</a></li>',
+			esc_url( $posts_url ),
+			esc_html( $posts_label )
+		);
+	}
+
+	$items[] = sprintf(
+		'<li class="geller-breadcrumbs__item"><span aria-current="page">%s</span></li>',
+		esc_html( wp_strip_all_tags( get_the_title() ) )
+	);
+
+	return sprintf(
+		'<nav class="geller-breadcrumbs" aria-label="%1$s"><ol class="geller-breadcrumbs__list">%2$s</ol></nav>',
+		esc_attr__( 'Breadcrumb', 'geller2026' ),
+		implode( '', $items )
+	);
+}
+
+add_shortcode( 'geller_post_neighbors', 'geller2026_post_neighbors_shortcode' );
+
+function geller2026_post_neighbors_shortcode(): string {
+	if ( ! is_singular( 'post' ) ) {
+		return '';
+	}
+
+	$previous_post = get_previous_post();
+	$next_post     = get_next_post();
+
+	if ( ! $previous_post && ! $next_post ) {
+		return '';
+	}
+
+	$items = [];
+
+	if ( $previous_post instanceof WP_Post ) {
+		$items[] = geller2026_render_post_neighbor_card( $previous_post, __( 'Anterior', 'geller2026' ), 'previous' );
+	}
+
+	if ( $next_post instanceof WP_Post ) {
+		$items[] = geller2026_render_post_neighbor_card( $next_post, __( 'Siguiente', 'geller2026' ), 'next' );
+	}
+
+	return sprintf(
+		'<nav class="geller-post-neighbors" aria-label="%1$s"><div class="geller-post-neighbors__grid">%2$s</div></nav>',
+		esc_attr__( 'Post navigation', 'geller2026' ),
+		implode( '', $items )
+	);
+}
+
+function geller2026_render_post_neighbor_card( WP_Post $post, string $label, string $direction ): string {
+	$thumbnail = get_the_post_thumbnail(
+		$post,
+		'large',
+		[
+			'class'   => 'geller-post-neighbors__image',
+			'loading' => 'lazy',
+			'alt'     => '',
+		]
+	);
+
+	if ( '' === $thumbnail ) {
+		$thumbnail = '<span class="geller-post-neighbors__image-placeholder" aria-hidden="true"></span>';
+	}
+
+	return sprintf(
+		'<a class="geller-post-neighbors__card is-%1$s" href="%2$s"><span class="geller-post-neighbors__media">%3$s</span><span class="geller-post-neighbors__content"><span class="geller-post-neighbors__label">%4$s</span><span class="geller-post-neighbors__title">%5$s</span></span></a>',
+		esc_attr( $direction ),
+		esc_url( get_permalink( $post ) ),
+		$thumbnail,
+		esc_html( $label ),
+		esc_html( get_the_title( $post ) )
+	);
+}
+
 // ─── Announcement bar ──────────────────────────────────────────────────────────
 // Renders right after <body> via template-canvas.php → wp_body_open().
 // The bar is in normal flow, so the sticky header sits below it correctly.
